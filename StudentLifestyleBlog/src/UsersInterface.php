@@ -10,6 +10,8 @@ interface UsersInterface {
     public function getLikesCount(int $postId): int;
 
     public function getAllCommentsByPostId(int $postId): array;
+
+    public function addLogEntry(string $operation, string $description): bool;
 }
 
 ?>

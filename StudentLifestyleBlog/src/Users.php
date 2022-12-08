@@ -101,6 +101,19 @@ class Users implements UsersInterface {
         return $comments;
     }
 
+    public function addLogEntry(string $operation, string $description): bool {
+        if ($db = (new MySQL())->connect()) {
+            try {
+                $stmt = $db->prepare("INSERT INTO `log` (`operation`, `description`) VALUES (?, ?);");
+                $stmt->bind_param("ss", $operation, $description);
+                return $stmt->execute();
+            } catch (mysqli_sql_exception $e) {
+            }
+        }
+
+        return false;
+    }
+
     // if ($db = (new MySQL())->connect()) {
     //     try {
     //         $stmt = $db->prepare(";");
@@ -117,5 +130,3 @@ class Users implements UsersInterface {
 
     // return null;
 }
-
-?>
