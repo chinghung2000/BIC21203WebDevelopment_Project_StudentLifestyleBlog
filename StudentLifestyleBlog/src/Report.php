@@ -19,28 +19,30 @@ class Report {
     public const STATUS_REJECTED = "REJECTED";
 
     function __construct(array $r = null) {
-        $this->id = $r["report_id"];
-        $this->user = new User();
-        $this->user->setId($r["user_id"]);
-        $this->user->setUsername($r["username"]);
-        $this->user->setAttemptLeft($r["attempt_left"]);
-        $this->user->setName($r["user_name"]);
-        $this->user->setEmail($r["user_email"]);
-        $this->post = new Post();
-        $this->post->setId($r["post_id"]);
-        $this->post->setTitle($r["post_title"]);
-        $this->post->setDate($r["post_date"]);
-        $this->post->setType($r["post_type"]);
-        $this->post->setCategory($r["post_category"]);
-        $this->post->setContent($r["post_content"]);
-        $this->comment = new Comment();
-        $this->comment->setId($r["comment_id"]);
-        $this->comment->setContent($r["comment_content"]);
-        $this->comment->setTimestamp($r["comment_timestamp"]);
-        $this->timestamp = $r["report_timestamp"];
-        $this->subject = $r["subject"];
-        $this->description = $r["description"];
-        $this->status = $r["status"];
+        if ($r) {
+            $this->id = $r["report_id"];
+            $this->user = new User();
+            $this->user->setId($r["user_id"]);
+            $this->user->setUsername($r["username"]);
+            $this->user->setAttemptLeft($r["attempt_left"]);
+            $this->user->setName($r["user_name"]);
+            $this->user->setEmail($r["user_email"]);
+            $this->post = new Post();
+            $this->post->setId($r["post_id"]);
+            $this->post->setTitle($r["post_title"]);
+            $this->post->setDate($r["post_date"]);
+            $this->post->setType($r["post_type"]);
+            $this->post->setCategory($r["post_category"]);
+            $this->post->setContent($r["post_content"]);
+            $this->comment = new Comment();
+            $this->comment->setId($r["comment_id"]);
+            $this->comment->setContent($r["comment_content"]);
+            $this->comment->setTimestamp($r["comment_timestamp"]);
+            $this->timestamp = date_create($r["report_timestamp"]);
+            $this->subject = $r["subject"];
+            $this->description = $r["description"];
+            $this->status = $r["status"];
+        }
     }
 
     public function getId(): int {
