@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 04, 2022 at 07:40 AM
+-- Generation Time: Dec 27, 2022 at 05:21 PM
 -- Server version: 10.4.25-MariaDB
 -- PHP Version: 8.1.10
 
@@ -117,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `report` (
   `user_id` int(11) NOT NULL,
   `post_id` int(11) DEFAULT NULL,
   `comment_id` int(11) DEFAULT NULL,
-  `record_timestamp` datetime NOT NULL,
+  `report_timestamp` datetime NOT NULL,
   `subject` varchar(100) NOT NULL,
   `description` text NOT NULL,
   `status` varchar(100) NOT NULL DEFAULT 'PENDING',

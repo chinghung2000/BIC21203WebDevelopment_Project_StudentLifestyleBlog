@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 04, 2022 at 07:43 AM
+-- Generation Time: Dec 27, 2022 at 05:30 PM
 -- Server version: 10.4.25-MariaDB
 -- PHP Version: 8.1.10
 
@@ -38,16 +38,11 @@ CREATE TABLE IF NOT EXISTS `admin` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Truncate table before insert `admin`
---
-
-TRUNCATE TABLE `admin`;
---
 -- Dumping data for table `admin`
 --
 
 INSERT INTO `admin` (`admin_id`, `password`, `admin_name`) VALUES
-(1, 'admin', 'admin');
+(1, 'x+o6cbTv1jMaWURN79M2Gg==', 'admin');
 
 -- --------------------------------------------------------
 
@@ -67,11 +62,6 @@ CREATE TABLE IF NOT EXISTS `comment` (
   KEY `comment_fk_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Truncate table before insert `comment`
---
-
-TRUNCATE TABLE `comment`;
 -- --------------------------------------------------------
 
 --
@@ -89,11 +79,6 @@ CREATE TABLE IF NOT EXISTS `likes` (
   KEY `likes_fk_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Truncate table before insert `likes`
---
-
-TRUNCATE TABLE `likes`;
 -- --------------------------------------------------------
 
 --
@@ -108,11 +93,6 @@ CREATE TABLE IF NOT EXISTS `log` (
   PRIMARY KEY (`log_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Truncate table before insert `log`
---
-
-TRUNCATE TABLE `log`;
 -- --------------------------------------------------------
 
 --
@@ -132,11 +112,6 @@ CREATE TABLE IF NOT EXISTS `post` (
   KEY `post_fk_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Truncate table before insert `post`
---
-
-TRUNCATE TABLE `post`;
 -- --------------------------------------------------------
 
 --
@@ -149,7 +124,7 @@ CREATE TABLE IF NOT EXISTS `report` (
   `user_id` int(11) NOT NULL,
   `post_id` int(11) DEFAULT NULL,
   `comment_id` int(11) DEFAULT NULL,
-  `record_timestamp` datetime NOT NULL,
+  `report_timestamp` datetime NOT NULL,
   `subject` varchar(100) NOT NULL,
   `description` text NOT NULL,
   `status` varchar(100) NOT NULL DEFAULT 'PENDING',
@@ -159,11 +134,6 @@ CREATE TABLE IF NOT EXISTS `report` (
   KEY `report_fk_comment_id` (`comment_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Truncate table before insert `report`
---
-
-TRUNCATE TABLE `report`;
 -- --------------------------------------------------------
 
 --
@@ -182,11 +152,6 @@ CREATE TABLE IF NOT EXISTS `user` (
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Truncate table before insert `user`
---
-
-TRUNCATE TABLE `user`;
 --
 -- Constraints for dumped tables
 --
