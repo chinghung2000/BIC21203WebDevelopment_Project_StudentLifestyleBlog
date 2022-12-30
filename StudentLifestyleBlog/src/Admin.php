@@ -5,7 +5,9 @@ require_once "Users.php";
 require_once "AdminInterface.php";
 require_once "MySQL.php";
 require_once "AES.php";
+require_once "Comment.php";
 require_once "Log.php";
+require_once "Report.php";
 require_once "User.php";
 
 class Admin extends Users implements AdminInterface {
@@ -226,7 +228,7 @@ class Admin extends Users implements AdminInterface {
 
         if ($db = (new MySQL())->connect()) {
             try {
-                $stmt = $db->prepare("SELECT `r`.`report_id`, `u`.`user_id`, `u`.`username`, `u`.`attempt_left`, `u`.`user_name`, `u`.`user_email`, `p`.`post_id`, `p`.`post_title`, `p`.`post_date`, `p`.`post_type`, `p`.`post_category`, `p`.`post_content`, `c`.`comment_id`, `c`.`comment_content`, `c`.`comment_timestamp`, `r`.`report_timestamp`, `r`.`subject`, `r`.`description`, `r`.`status` FROM `report` `r` INNER JOIN `user` `u` ON `r`.`user_id`=`u`.`user_id` INNER JOIN `post` `p` ON `r`.`post_id`=`p`.`post_id` INNER JOIN `comment` `c` ON `r`.`comment_id`=`c`.`comment_id`;");
+                $stmt = $db->prepare("SELECT `r`.`report_id`, `u`.`user_id`, `u`.`username`, `u`.`attempt_left`, `u`.`user_name`, `u`.`user_email`, `p`.`post_id`, `p`.`post_title`, `p`.`post_date`, `p`.`post_type`, `p`.`post_category`, `p`.`post_content`, `c`.`comment_id`, `c`.`comment_content`, `c`.`comment_timestamp`, `r`.`report_timestamp`, `r`.`subject`, `r`.`description`, `r`.`status` FROM `report` `r` INNER JOIN `user` `u` ON `r`.`user_id`=`u`.`user_id` LEFT JOIN `post` `p` ON `r`.`post_id`=`p`.`post_id` LEFT JOIN `comment` `c` ON `r`.`comment_id`=`c`.`comment_id`;");
                 $stmt->execute();
                 $result = $stmt->get_result();
 

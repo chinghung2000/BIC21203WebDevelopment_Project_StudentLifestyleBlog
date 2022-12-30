@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 require_once "../src/Admin.php";
+require_once "../src/Log.php";
 include_once "../functions.php";
 include_once "../checkSession.php";
 
@@ -26,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION["user_type"] = "admin";
             header("Location: " . WEBSITE_PATH . "/admin/login.php");
         } else {
-            $publicUser->addLogEntry("LOGIN", "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $adminId
+            $publicUser->addLogEntry(Log::OPERATION_FAILED_LOGIN, "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $adminId
                 . " attempted to log in with incorrect credential");
             echo JSAlert("Incorrect username or password.");
         }

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 require_once "../../src/Admin.php";
+require_once "../../src/Log.php";
 include_once "../../functions.php";
 include_once "../../checkSessionAdmin.php";
 
@@ -18,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     if ($admin) {
                         $U_admin->deleteAdmin(intval($adminId));
-                        $U_admin->addLogEntry("DELETE", "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId
+                        $U_admin->addLogEntry(Log::OPERATION_DELETE, "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId
                             . " deleted admin (ID: \"" . $admin->getId() . "\", Name: \"" . $admin->getName() . "\")");
                     } else {
                         echo JSAlert("The admin doesn't exist.");
@@ -127,12 +128,12 @@ $admins = $U_admin->getAllAdmins();
                         <th colspan="2">Action</th>
                     </thead>
                     <tbody>
-                        <form id="delete-call-form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
-                            <input type="hidden" name="method" value="delete">
-                            <input type="hidden" name="admin_id" value="">
-                        </form>
                         <form id="edit-call-form" action="<?php echo "edit.php"; ?>" method="POST">
                             <input type="hidden" name="method" value="edit_query">
+                            <input type="hidden" name="admin_id" value="">
+                        </form>
+                        <form id="delete-call-form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
+                            <input type="hidden" name="method" value="delete">
                             <input type="hidden" name="admin_id" value="">
                         </form>
                         <?php
@@ -141,7 +142,9 @@ $admins = $U_admin->getAllAdmins();
                                 <td><?php echo htmlspecialchars(strval($admin->getId())); ?></td>
                                 <td><?php echo htmlspecialchars($admin->getName()); ?></td>
                                 <td>Admin</td>
-                                <td><a href="#" class="edit" onclick="editCall('<?php echo htmlspecialchars(strval($admin->getId())); ?>');">Edit</a></td>
+                                <td>
+                                    <a href="#" class="edit" onclick="editCall('<?php echo htmlspecialchars(strval($admin->getId())); ?>');">Edit</a>
+                                </td>
                                 <td>
                                     <a href="#" class="delete" onclick="deleteCall('<?php echo htmlspecialchars(strval($admin->getId())); ?>');">Delete</a>
                                 </td>

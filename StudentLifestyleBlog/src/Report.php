@@ -27,17 +27,24 @@ class Report {
             $this->user->setAttemptLeft($r["attempt_left"]);
             $this->user->setName($r["user_name"]);
             $this->user->setEmail($r["user_email"]);
-            $this->post = new Post();
-            $this->post->setId($r["post_id"]);
-            $this->post->setTitle($r["post_title"]);
-            $this->post->setDate($r["post_date"]);
-            $this->post->setType($r["post_type"]);
-            $this->post->setCategory($r["post_category"]);
-            $this->post->setContent($r["post_content"]);
-            $this->comment = new Comment();
-            $this->comment->setId($r["comment_id"]);
-            $this->comment->setContent($r["comment_content"]);
-            $this->comment->setTimestamp($r["comment_timestamp"]);
+
+            if ($r["post_id"] !== null) {
+                $this->post = new Post();
+                $this->post->setId($r["post_id"]);
+                $this->post->setTitle($r["post_title"]);
+                $this->post->setDate(date_create($r["post_date"]));
+                $this->post->setType($r["post_type"]);
+                $this->post->setCategory($r["post_category"]);
+                $this->post->setContent($r["post_content"]);
+            }
+
+            if ($r["comment_id"] !== null) {
+                $this->comment = new Comment();
+                $this->comment->setId($r["comment_id"]);
+                $this->comment->setContent($r["comment_content"]);
+                $this->comment->setTimestamp($r["comment_timestamp"]);
+            }
+
             $this->timestamp = date_create($r["report_timestamp"]);
             $this->subject = $r["subject"];
             $this->description = $r["description"];
@@ -61,12 +68,20 @@ class Report {
         $this->user = $user;
     }
 
+    public function hasPost(): bool {
+        return isset($this->post);
+    }
+
     public function getPost(): Post {
         return $this->post;
     }
 
     public function setPost(Post $post): void {
         $this->post = $post;
+    }
+
+    public function hasComment(): bool {
+        return isset($this->comment);
     }
 
     public function getComment(): Comment {

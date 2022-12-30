@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 require_once "../../src/Admin.php";
+require_once "../../src/Log.php";
 include_once "../../functions.php";
 include_once "../../checkSessionAdmin.php";
 
@@ -47,11 +48,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 if ($oldAdmin) {
                     if ($adminId == $oldAdmin->getId() || !$admin) {
-                        $U_admin->updateAdmin(intval($_SESSION["v_admin_id"]), intval($adminId), $adminName);
-                        $U_admin->addLogEntry("UPDATE", "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId
+                        $U_admin->updateAdmin($oldAdmin->getId(), intval($adminId), $adminName);
+                        $U_admin->addLogEntry(Log::OPERATION_UPDATE, "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId
                             . " updated admin (ID: \"" . $oldAdmin->getId() . "\", Name: \"" . $oldAdmin->getName() . "\") to ID: \"" . $adminId . "\", Name: \"" . $adminName . "\"");
 
-                        if (!$admin) {
+                        if ($oldAdmin->getId() == $S_userId) {
                             $_SESSION["user_id"] = $adminId;
                         }
 

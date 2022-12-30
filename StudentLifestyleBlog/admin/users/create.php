@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 require_once "../../src/Admin.php";
+require_once "../../src/Log.php";
 include_once "../../functions.php";
 include_once "../../checkSessionAdmin.php";
 
@@ -31,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (!$admin) {
             $U_admin->addAdmin(intval($adminId), $password, $adminName);
-            $U_admin->addLogEntry("INSERT", "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId
+            $U_admin->addLogEntry(Log::OPERATION_INSERT, "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId
                 . " added new admin (ID: \"" . $adminId . "\", Name: \"" . $adminName . "\")");
             header("Location: " . WEBSITE_PATH . "/admin/users");
         } else {

@@ -48,7 +48,7 @@ class Users implements UsersInterface {
     public function getAnyPost(int $postId): Post {
         if ($db = (new MySQL())->connect()) {
             try {
-                $stmt = $db->prepare("SELECT `post_id`, `user_id`, `post_title`, `post_date`, `post_type`, `post_category`, `post_content` FROM `post` WHERE `post_id`=?;");
+                $stmt = $db->prepare("SELECT `p`.`post_id`, `u`.`user_id`, `u`.`username`, `u`.`attempt_left`, `u`.`user_name`, `u`.`user_email`, `p`.`post_title`, `p`.`post_date`, `p`.`post_type`, `p`.`post_category`, `p`.`post_content` FROM `post` `p` INNER JOIN `user` `u` ON `p`.`user_id`=`u`.`user_id` WHERE `p`.`post_id`=?;");
                 $stmt->bind_param("i", $postId);
                 $stmt->execute();
                 $result = $stmt->get_result();
