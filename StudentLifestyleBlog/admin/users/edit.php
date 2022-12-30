@@ -8,34 +8,61 @@ include_once "../../checkSessionAdmin.php";
 $U_admin = new Admin();
 $adminId = $adminName = "";
 
+if ($_SERVER["REQUEST_METHOD"] != "POST") {
+    unset($_SESSION["v_admin_id"]);
+    header("Location: " . WEBSITE_PATH . "/admin/users");
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $adminId = !empty($_POST["admin_id"]) ? $_POST["admin_id"] : "";
     $adminName = !empty($_POST["admin_name"]) ? $_POST["admin_name"] : "";
-    $password = !empty($_POST["password"]) ? $_POST["password"] : "";
-    $cpassword = !empty($_POST["cpassword"]) ? $_POST["cpassword"] : "";
 
-    if (empty($_POST["admin_id"])) {
-        echo JSAlert("Please enter admin ID.");
-    } else if (!is_numeric(($_POST["admin_id"]))) {
-        echo JSAlert("Admin ID must be an integer.");
-    } else if ($_POST["admin_id"] < 1) {
-        echo JSAlert("Admin ID must be greater than zero.");
-    } else if (empty($_POST["admin_name"])) {
-        echo JSAlert("Please enter admin name.");
-    } else if (empty($_POST["password"])) {
-        echo JSAlert("Please enter password.");
-    } else if (empty($_POST["cpassword"])) {
-        echo JSAlert("Please confirm the password.");
-    } else {
-        $admin = $U_admin->getAdmin(intval($adminId));
+    if (!empty($_POST["method"])) {
+        if ($_POST["method"] == "edit_query") {
+            if (!empty($_POST["admin_id"])) {
+                $admin = $U_admin->getAdmin(intval($adminId));
 
-        if (!$admin) {
-            $U_admin->addAdmin(intval($adminId), $password, $adminName);
-            $U_admin->addLogEntry("INSERT", "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId
-                . " added new admin (ID: \"" . $adminId . "\", Name: \"" . $adminName . "\")");
-            header("Location: " . WEBSITE_PATH . "/admin/users");
-        } else {
-            echo JSAlert("Admin with this ID \"" . $adminId . "\" already exists.");
+                if ($admin) {
+                    $_SESSION["v_admin_id"] = $admin->getId();
+                    $adminId = strval($admin->getId());
+                    $adminName = $admin->getName();
+                } else {
+                    header("Location: " . WEBSITE_PATH . "admin/users");
+                }
+            }
+        } else if ($_POST["method"] == "edit") {
+            if (!isset($_SESSION["v_admin_id"])) {
+                header("Location: " . WEBSITE_PATH . "/admin/users");
+            } else if (empty($_POST["admin_id"])) {
+                echo JSAlert("Please enter admin ID.");
+            } else if (!is_numeric(($_POST["admin_id"]))) {
+                echo JSAlert("Admin ID must be an integer.");
+            } else if ($_POST["admin_id"] < 1) {
+                echo JSAlert("Admin ID must be greater than zero.");
+            } else if (empty($_POST["admin_name"])) {
+                echo JSAlert("Please enter admin name.");
+            } else {
+                $oldAdmin = $U_admin->getAdmin(intval($_SESSION["v_admin_id"]));
+                $admin = $U_admin->getAdmin(intval($adminId));
+
+                if ($oldAdmin) {
+                    if ($adminId == $oldAdmin->getId() || !$admin) {
+                        $U_admin->updateAdmin(intval($_SESSION["v_admin_id"]), intval($adminId), $adminName);
+                        $U_admin->addLogEntry("UPDATE", "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId
+                            . " updated admin (ID: \"" . $oldAdmin->getId() . "\", Name: \"" . $oldAdmin->getName() . "\") to ID: \"" . $adminId . "\", Name: \"" . $adminName . "\"");
+
+                        if (!$admin) {
+                            $_SESSION["user_id"] = $adminId;
+                        }
+
+                        header("Location: " . WEBSITE_PATH . "/admin/users");
+                    } else {
+                        echo JSAlert("The admin ID is unavailable.");
+                    }
+                } else {
+                    echo JSAlert("The admin doesn't exist.");
+                }
+            }
         }
     }
 }
@@ -111,11 +138,12 @@ $currAdmin = $U_admin->getAdmin(intval($S_userId));
 
             <div class="content">
 
-                <h2 class="page-title">Add Admin</h2>
+                <h2 class="page-title">Edit Admin</h2>
 
                 <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+                    <input type="hidden" name="method" value="edit">
                     <div>
-                        <label>Admin ID</label>
+                        <label>New Admin ID</label>
                         <input type="text" name="admin_id" class="text-input" value="<?php echo htmlspecialchars($adminId); ?>">
                     </div>
                     <div>
@@ -123,15 +151,7 @@ $currAdmin = $U_admin->getAdmin(intval($S_userId));
                         <input type="text" name="admin_name" class="text-input" value="<?php echo htmlspecialchars($adminName); ?>">
                     </div>
                     <div>
-                        <label>Password</label>
-                        <input type="password" name="password" class="text-input">
-                    </div>
-                    <div>
-                        <label>Password Confirmation</label>
-                        <input type="password" name="cpassword" class="text-input">
-                    </div>
-                    <div>
-                        <button type="submit" class="btn btn-big">Add Admin</button>
+                        <button type="submit" class="btn btn-big">Save</button>
                     </div>
                 </form>
             </div>

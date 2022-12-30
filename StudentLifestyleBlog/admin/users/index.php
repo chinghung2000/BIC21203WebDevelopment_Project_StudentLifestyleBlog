@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-$currAdmin = $U_admin->getAdmin($S_userId);
+$currAdmin = $U_admin->getAdmin(intval($S_userId));
 $admins = $U_admin->getAllAdmins();
 
 ?>
@@ -64,6 +64,12 @@ $admins = $U_admin->getAllAdmins();
             $form.elements["admin_id"].value = $adminId;
             $form.submit();
         }
+
+        function editCall($adminId) {
+            $form = document.getElementById("edit-call-form");
+            $form.elements["admin_id"].value = $adminId;
+            $form.submit();
+        }
     </script>
 </head>
 
@@ -79,7 +85,7 @@ $admins = $U_admin->getAllAdmins();
             <li>
                 <a href="#">
                     <i class="fa fa-user"></i>
-                    <?php echo htmlspecialchars($currAdmin->getName()); ?>
+                    <?php echo htmlspecialchars($currAdmin->getName()); ?> (ID: <?php echo htmlspecialchars(strval($currAdmin->getId())); ?>)
                     <i class="fa fa-chevron-down" style="font-size: .8em;"></i>
                 </a>
                 <ul>
@@ -115,7 +121,7 @@ $admins = $U_admin->getAllAdmins();
 
                 <table>
                     <thead>
-                        <th>No</th>
+                        <th>ID</th>
                         <th>Name</th>
                         <th>Role</th>
                         <th colspan="2">Action</th>
@@ -125,18 +131,22 @@ $admins = $U_admin->getAllAdmins();
                             <input type="hidden" name="method" value="delete">
                             <input type="hidden" name="admin_id" value="">
                         </form>
-                        <?php $i = 1;
+                        <form id="edit-call-form" action="<?php echo "edit.php"; ?>" method="POST">
+                            <input type="hidden" name="method" value="edit_query">
+                            <input type="hidden" name="admin_id" value="">
+                        </form>
+                        <?php
                         foreach ($admins as $admin) : ?>
                             <tr>
-                                <td><?php echo $i; ?></td>
+                                <td><?php echo htmlspecialchars(strval($admin->getId())); ?></td>
                                 <td><?php echo htmlspecialchars($admin->getName()); ?></td>
                                 <td>Admin</td>
-                                <td><a href="#" class="edit">Edit</a></td>
+                                <td><a href="#" class="edit" onclick="editCall('<?php echo htmlspecialchars(strval($admin->getId())); ?>');">Edit</a></td>
                                 <td>
                                     <a href="#" class="delete" onclick="deleteCall('<?php echo htmlspecialchars(strval($admin->getId())); ?>');">Delete</a>
                                 </td>
                             </tr>
-                        <?php $i++;
+                        <?php
                         endforeach; ?>
                     </tbody>
                 </table>

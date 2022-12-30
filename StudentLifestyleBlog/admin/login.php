@@ -26,6 +26,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION["user_type"] = "admin";
             header("Location: " . WEBSITE_PATH . "/admin/login.php");
         } else {
+            $publicUser->addLogEntry("LOGIN", "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $adminId
+                . " attempted to log in with incorrect credential");
             echo JSAlert("Incorrect username or password.");
         }
     }
@@ -69,12 +71,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <li>
                 <a href="#">
                     <i class="fa fa-user"></i>
-                    Group 18
+
                     <i class="fa fa-chevron-down" style="font-size: .8em;"></i>
                 </a>
                 <ul>
-                    <li><a href="#">Dashboard</a></li>
-                    <li><a href="#" class="logout">Logout</a></li>
+                    <!-- <li><a href="#">Dashboard</a></li>
+                    <li><a href="#" class="logout">Logout</a></li> -->
                 </ul>
             </li>
         </ul>

@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
     }
 }
 
-$currAdmin = $U_admin->getAdmin($S_userId);
+$currAdmin = $U_admin->getAdmin(intval($S_userId));
 
 ?>
 
@@ -59,11 +59,11 @@ $currAdmin = $U_admin->getAdmin($S_userId);
             <li>
                 <a href="#">
                     <i class="fa fa-user"></i>
-                    <?php echo htmlspecialchars($currAdmin->getName()); ?>
+                    <?php echo htmlspecialchars($currAdmin->getName()); ?> (ID: <?php echo htmlspecialchars(strval($currAdmin->getId())); ?>)
                     <i class="fa fa-chevron-down" style="font-size: .8em;"></i>
                 </a>
                 <ul>
-                    <li><a href="#" class="logout">Logout</a></li>
+                    <li><a href="../../logout.php" class="logout">Logout</a></li>
                 </ul>
             </li>
         </ul>
