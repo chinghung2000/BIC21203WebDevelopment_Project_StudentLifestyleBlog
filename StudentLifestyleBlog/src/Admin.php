@@ -1,10 +1,12 @@
 <?php
 
 declare(strict_types=1);
-require_once "MySQL.php";
-require_once "AES.php";
 require_once "Users.php";
 require_once "AdminInterface.php";
+require_once "MySQL.php";
+require_once "AES.php";
+require_once "Log.php";
+require_once "User.php";
 
 class Admin extends Users implements AdminInterface {
     private int $id;

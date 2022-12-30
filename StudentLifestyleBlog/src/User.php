@@ -1,9 +1,9 @@
 <?php
 
 declare(strict_types=1);
-require_once "MySQL.php";
 require_once "Users.php";
 require_once "UserInterface.php";
+require_once "MySQL.php";
 
 class User extends Users implements UserInterface {
     private int $id;
