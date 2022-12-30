@@ -1,0 +1,133 @@
+header {
+  background: black;
+}
+
+.admin-wrapper {
+  display: flex;
+  height: calc(100% - 66px);
+}
+
+.admin-wrapper .left-sidebar {
+  flex: 2;
+  height: 100%;
+  background: rgb(36, 36, 36);
+}
+
+.admin-wrapper .left-sidebar ul {
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+  color: aliceblue;
+}
+
+.admin-wrapper .left-sidebar ul li a {
+  padding: 18px;
+  display: block;
+  border-bottom: 1px solid rgb(0, 0, 0);
+}
+
+.admin-wrapper .left-sidebar ul li a:hover {
+  background: black;
+}
+
+.admin-wrapper .admin-content {
+  flex: 8;
+  height: 100%;
+  padding: 40px 100px 100px;
+  overflow-y: scroll;
+}
+.admin-content .page-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-family: 'Helvetica';
+}
+
+
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1.1rem;
+  font-family: helvetica;
+}
+
+th,
+td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #d3d3d3;
+  
+}
+
+
+.edit {
+  color: green;
+}
+
+.delete {
+  color: red;
+}
+
+.publish {
+  color: blue;
+}
+
+.edit:hover,
+.delete:hover,
+.publish:hover {
+  color: rgba(red, green, blue, alpha);
+  transition: 0.4s;
+  font-weight: bold;
+  
+}
+
+form div {
+  margin-bottom: 15px;
+}
+
+
+/*LOG ACTIVITY*/
+
+.dropbtn {
+  background-color: black;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  border-radius: 15px;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  border-radius: 15px;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown:hover .dropbtn {
+  background-color:  rgb(57, 57, 57) ;
+}

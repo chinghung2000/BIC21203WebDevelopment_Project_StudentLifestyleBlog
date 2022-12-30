@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 require_once "MySQL.php";
+require_once "AES.php";
 require_once "Users.php";
 require_once "AdminInterface.php";
 
@@ -34,13 +35,17 @@ class Admin extends Users implements AdminInterface {
 
     public function login(int $adminId, string $password): Admin|false {
         if ($db = (new MySQL())->connect()) {
-            $stmt = $db->prepare("SELECT `admin_id`, `admin_name` FROM `admin` WHERE `admin_id`=? AND `password`=?;");
-            $stmt->bind_param("is", $adminId, $password);
-            $stmt->execute();
-            $result = $stmt->get_result();
+            try {
+                $stmt = $db->prepare("SELECT `admin_id`, `admin_name` FROM `admin` WHERE `admin_id`=? AND `password`=?;");
+                $password = AES::encrypt($password);
+                $stmt->bind_param("is", $adminId, $password);
+                $stmt->execute();
+                $result = $stmt->get_result();
 
-            if ($r = $result->fetch_assoc()) {
-                return new Admin($r);
+                if ($r = $result->fetch_assoc()) {
+                    return new Admin($r);
+                }
+            } catch (mysqli_sql_exception $e) {
             }
         }
 
@@ -51,7 +56,8 @@ class Admin extends Users implements AdminInterface {
         if ($db = (new MySQL())->connect()) {
             try {
                 $stmt = $db->prepare("UPDATE `admin` SET `password`=? WHERE `admin_id`=?;");
-                $stmt->bind_param("si", $password, $adminId);
+                $password = AES::encrypt($password);
+                $stmt->bind_param("is", $password, $adminId);
                 return $stmt->execute();
             } catch (mysqli_sql_exception $e) {
             }
@@ -64,7 +70,6 @@ class Admin extends Users implements AdminInterface {
         $admins = [];
 
         if ($db = (new MySQL())->connect()) {
-
             try {
                 $stmt = $db->prepare("SELECT `admin_id`, `admin_name` FROM `admin`;");
                 $stmt->execute();
@@ -98,11 +103,12 @@ class Admin extends Users implements AdminInterface {
         return null;
     }
 
-    public function addAdmin(int $adminId, string $adminName): bool {
+    public function addAdmin(int $adminId, string $password, string $adminName): bool {
         if ($db = (new MySQL())->connect()) {
             try {
                 $stmt = $db->prepare("INSERT INTO `admin` (`admin_id`, `password`, `admin_name`) VALUES (?, ?, ?);");
-                $stmt->bind_param("iss", $adminId, $adminId, $adminName);
+                $password = AES::encrypt($password);
+                $stmt->bind_param("iss", $adminId, $password, $adminName);
                 return $stmt->execute();
             } catch (mysqli_sql_exception $e) {
             }

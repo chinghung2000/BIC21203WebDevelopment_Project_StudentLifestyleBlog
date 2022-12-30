@@ -63,15 +63,18 @@ class User extends Users implements UserInterface {
     }
 
     public function login(string $username, string $password): User|false {
-        $db = (new MySQL())->connect();
+        if ($db = (new MySQL())->connect()) {
+            try {
+                $stmt = $db->prepare("SELECT `user_id`, `username`, `attempt_left`, `user_name`, `user_email` FROM `user` WHERE `username`=? AND `password`=?;");
+                $stmt->bind_param("ss", $username, $password);
+                $stmt->execute();
+                $result = $stmt->get_result();
 
-        $stmt = $db->prepare("SELECT `user_id`, `username`, `attempt_left`, `user_name`, `user_email` FROM `user` WHERE `username`=? AND `password`=?;");
-        $stmt->bind_param("ss", $username, $password);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($r = $result->fetch_assoc()) {
-            return new User($r);
+                if ($r = $result->fetch_assoc()) {
+                    return new User($r);
+                }
+            } catch (mysqli_sql_exception $e) {
+            }
         }
 
         return false;
@@ -323,5 +326,3 @@ class User extends Users implements UserInterface {
         return false;
     }
 }
-
-?>

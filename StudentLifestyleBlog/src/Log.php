@@ -7,18 +7,10 @@ class Log {
     private string $operation;
     private string $description;
     public const OPERATION_REGISTER = "REGISTER";
-    public const OPERATION_ADMIN_FAILED_LOGIN = "ADMIN_LOGIN";
-    public const OPERATION_ADD_ADMIN = "ADD_ADMIN";
-    public const OPERATION_UPDATE_ADMIN = "UPDATE_ADMIN";
-    public const OPERATION_DELETE_ADMIN = "DELETE_ADMIN";
-    public const OPERATION_ADMIN_DELETE_POST = "ADMIN_DELETE_POST";
-    public const OPERATION_ADMIN_DELETE_COMMENT = "ADMIN_DELETE_COMMENT";
     public const OPERATION_FAILED_LOGIN = "LOGIN";
-    public const OPERATION_UPDATE_PROFILE = "UPDATE_PROFILE";
-    public const OPERATION_UPDATE_PASSWORD = "UPDATE_PASSWORD";
-    public const OPERATION_ADD_POST = "ADD_POST";
-    public const OPERATION_UPDATE_POST = "UPDATE_POST";
-    public const OPERATION_DELETE_POST = "DELETE_POST";
+    public const OPERATION_INSERT = "INSERT";
+    public const OPERATION_UPDATE = "UPDATE";
+    public const OPERATION_DELETE = "DELETE";
 
     function __construct(array $r = null) {
         if ($r) {

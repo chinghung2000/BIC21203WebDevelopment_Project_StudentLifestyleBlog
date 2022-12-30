@@ -8,7 +8,7 @@ interface AdminInterface {
 
     public function getAllAdmins(): array;
     public function getAdmin(int $adminId): Admin|null;
-    public function addAdmin(int $adminId, string $adminName): bool;
+    public function addAdmin(int $adminId, string $password, string $adminName): bool;
     public function updateAdmin(int $oldAdminId, int $adminId, string $adminName): bool;
     public function deleteAdmin(int $adminId): bool;
 
