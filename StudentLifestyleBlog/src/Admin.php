@@ -61,7 +61,7 @@ class Admin extends Users implements AdminInterface {
             try {
                 $stmt = $db->prepare("UPDATE `admin` SET `password`=? WHERE `admin_id`=?;");
                 $password = Hash::generateDigest($password, Hash::SHA_256);
-                $stmt->bind_param("is", $password, $adminId);
+                $stmt->bind_param("si", $password, $adminId);
                 return $stmt->execute();
             } catch (mysqli_sql_exception $e) {
             }

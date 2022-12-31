@@ -20,9 +20,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $admin = $U_admin->getAdmin(intval($adminId));
 
                     if ($admin) {
-                        $U_admin->deleteAdmin(intval($adminId));
-                        $U_admin->addLogEntry(Log::OPERATION_DELETE, "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId
-                            . " deleted admin (ID: \"" . $admin->getId() . "\", Name: \"" . $admin->getName() . "\")");
+                        $ok = $U_admin->deleteAdmin(intval($adminId));
+
+                        if ($ok) {
+                            $U_admin->addLogEntry(Log::OPERATION_DELETE, "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId
+                                . " deleted admin (ID: \"" . $admin->getId() . "\", Name: \"" . $admin->getName() . "\")");
+                        } else {
+                            echo JSAlert("Error 500: Internal Server Error\n\nCouldn\'t delete admin.");
+                        }
                     } else {
                         echo JSAlert("The admin doesn\'t exist.");
                     }
@@ -92,6 +97,7 @@ $admins = $U_admin->getAllAdmins();
                     <i class="fa fa-chevron-down" style="font-size: .8em;"></i>
                 </a>
                 <ul>
+                    <li><a href="change-password.php">Change Password</a></li>
                     <li><a href="../../logout.php" class="logout">Logout</a></li>
                 </ul>
             </li>

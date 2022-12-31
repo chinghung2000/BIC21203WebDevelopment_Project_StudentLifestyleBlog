@@ -7,7 +7,8 @@ class Log {
     private string $operation;
     private string $description;
     public const OPERATION_REGISTER = "REGISTER";
-    public const OPERATION_FAILED_LOGIN = "LOGIN";
+    public const OPERATION_FAILED_LOGIN = "FAILED_LOGIN";
+    public const OPERATION_UPDATE_PASSWORD = "UPDATE_PASSWORD";
     public const OPERATION_INSERT = "INSERT";
     public const OPERATION_UPDATE = "UPDATE";
     public const OPERATION_DELETE = "DELETE";

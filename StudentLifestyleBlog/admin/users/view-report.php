@@ -27,19 +27,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $post = $U_admin->getAnyPost(intval($targetId));
 
                     if ($post) {
-                        $U_admin->deletePost($post->getId());
-                        $U_admin->updateReportStatus(intval($reportId), Report::STATUS_EXECUTED);
-                        $U_admin->addLogEntry(Log::OPERATION_DELETE, "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId
-                            . " deleted post (ID: \"" . $post->getId() . "\", Title: \"" . $post->getTitle() . "\")");
+                        $ok = $U_admin->deletePost($post->getId());
+
+                        if ($ok) {
+                            $U_admin->updateReportStatus(intval($reportId), Report::STATUS_EXECUTED);
+                            $U_admin->addLogEntry(Log::OPERATION_DELETE, "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId
+                                . " deleted post (ID: \"" . $post->getId() . "\", Title: \"" . $post->getTitle() . "\")");
+                        } else {
+                            echo JSAlert("Error 500: Internal Server Error\n\nCouldn\'t delete post.");
+                        }
                     }
                 } else if ($targetType == "comment") {
                     $comment = $U_admin->getComment(intval($targetId));
 
                     if ($comment) {
-                        $U_admin->deleteComment(intval($targetId));
-                        $U_admin->updateReportStatus(intval($reportId), Report::STATUS_EXECUTED);
-                        $U_admin->addLogEntry(Log::OPERATION_DELETE, "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId
-                            . " deleted comment (ID: \"" . $comment->getId() . "\")");
+                        $ok = $U_admin->deleteComment(intval($targetId));
+
+                        if ($ok) {
+                            $U_admin->updateReportStatus(intval($reportId), Report::STATUS_EXECUTED);
+                            $U_admin->addLogEntry(Log::OPERATION_DELETE, "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId
+                                . " deleted comment (ID: \"" . $comment->getId() . "\")");
+                        } else {
+                            echo JSAlert("Error 500: Internal Server Error\n\nCouldn\'t delete comment.");
+                        }
                     }
                 }
             }
@@ -115,6 +125,7 @@ $reports = $U_admin->getAllReports();
                     <i class="fa fa-chevron-down" style="font-size: .8em;"></i>
                 </a>
                 <ul>
+                    <li><a href="change-password.php">Change Password</a></li>
                     <li><a href="../../logout.php" class="logout">Logout</a></li>
                 </ul>
             </li>

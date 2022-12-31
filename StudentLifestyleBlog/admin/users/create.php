@@ -49,10 +49,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $admin = $U_admin->getAdmin(intval($adminId));
 
         if (!$admin) {
-            $U_admin->addAdmin(intval($adminId), $password, $adminName);
-            $U_admin->addLogEntry(Log::OPERATION_INSERT, "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId
-                . " added new admin (ID: \"" . $adminId . "\", Name: \"" . $adminName . "\")");
-            header("Location: " . WEBSITE_PATH . "/admin/users");
+            $ok = $U_admin->addAdmin(intval($adminId), $password, $adminName);
+
+            if ($ok) {
+                $U_admin->addLogEntry(Log::OPERATION_INSERT, "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId
+                    . " added new admin (ID: \"" . $adminId . "\", Name: \"" . $adminName . "\")");
+                header("Location: " . WEBSITE_PATH . "/admin/users");
+            } else {
+                echo JSAlert("Error 500: Internal Server Error\n\nCouldn\'t add admin.");
+            }
         } else {
             echo JSAlert("Admin with this ID \"" . $adminId . "\" already exists.");
         }
@@ -102,6 +107,7 @@ $currAdmin = $U_admin->getAdmin(intval($S_userId));
                     <i class="fa fa-chevron-down" style="font-size: .8em;"></i>
                 </a>
                 <ul>
+                    <li><a href="change-password.php">Change Password</a></li>
                     <li><a href="../../logout.php" class="logout">Logout</a></li>
                 </ul>
             </li>
@@ -146,7 +152,7 @@ $currAdmin = $U_admin->getAdmin(intval($S_userId));
                         <input type="password" name="password" class="text-input">
                     </div>
                     <div>
-                        <label>Password Confirmation</label>
+                        <label>Confirm Password</label>
                         <input type="password" name="cpassword" class="text-input">
                     </div>
                     <div>

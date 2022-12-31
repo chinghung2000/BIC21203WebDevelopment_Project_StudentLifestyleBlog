@@ -58,15 +58,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 if ($oldAdmin) {
                     if ($adminId == $oldAdmin->getId() || !$admin) {
-                        $U_admin->updateAdmin($oldAdmin->getId(), intval($adminId), $adminName);
-                        $U_admin->addLogEntry(Log::OPERATION_UPDATE, "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId
-                            . " updated admin (ID: \"" . $oldAdmin->getId() . "\", Name: \"" . $oldAdmin->getName() . "\") to ID: \"" . $adminId . "\", Name: \"" . $adminName . "\"");
+                        $ok = $U_admin->updateAdmin($oldAdmin->getId(), intval($adminId), $adminName);
 
-                        if ($oldAdmin->getId() == $S_userId) {
-                            $_SESSION["user_id"] = $adminId;
+                        if ($ok) {
+                            $U_admin->addLogEntry(Log::OPERATION_UPDATE, "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId
+                                . " updated admin (ID: \"" . $oldAdmin->getId() . "\", Name: \"" . $oldAdmin->getName() . "\") to ID: \"" . $adminId . "\", Name: \"" . $adminName . "\"");
+
+                            if ($oldAdmin->getId() == $S_userId) {
+                                $_SESSION["user_id"] = $adminId;
+                            }
+
+                            header("Location: " . WEBSITE_PATH . "/admin/users");
+                        } else {
+                            echo JSAlert("Error 500: Internal Server Error\n\nCouldn\'t edit admin.");
                         }
-
-                        header("Location: " . WEBSITE_PATH . "/admin/users");
                     } else {
                         echo JSAlert("The admin ID is unavailable.");
                     }
@@ -121,6 +126,7 @@ $currAdmin = $U_admin->getAdmin(intval($S_userId));
                     <i class="fa fa-chevron-down" style="font-size: .8em;"></i>
                 </a>
                 <ul>
+                    <li><a href="change-password.php">Change Password</a></li>
                     <li><a href="../../logout.php" class="logout">Logout</a></li>
                 </ul>
             </li>

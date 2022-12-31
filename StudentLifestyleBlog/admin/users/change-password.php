@@ -1,46 +1,45 @@
 <?php
 
 declare(strict_types=1);
-require_once "../src/Admin.php";
-require_once "../src/Log.php";
-include_once "../functions.php";
-include_once "../checkSession.php";
+require_once "../../src/Admin.php";
+require_once "../../src/Log.php";
+include_once "../../functions.php";
+include_once "../../checkSessionAdmin.php";
+
+$U_admin = new Admin();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (!array_key_exists("admin_id", $_POST)) {
-        echo JSAlert("Error 400: Bad Request: Parameter 'admin_id' is required");
-    } else if ($_POST["admin_id"] == "") {
-        echo JSAlert("Please enter admin ID.");
-    } else if (!is_numeric(($_POST["admin_id"]))) {
-        echo JSAlert("Admin ID must be an integer.");
-    } else if (intval($_POST["admin_id"]) < 1) {
-        echo JSAlert("Admin ID must be greater than zero.");
-    } else if (intval($_POST["admin_id"]) > 2147483647) {
-        echo JSAlert("Admin ID must not exceed 2147483647.");
-    } else if (!array_key_exists("password", $_POST)) {
+    if (!array_key_exists("password", $_POST)) {
         echo JSAlert("Error 400: Bad Request: Parameter 'password' is required");
     } else if ($_POST["password"] == "") {
         echo JSAlert("Please enter password.");
+    } else if (strlen($_POST["password"]) < 8) {
+        echo JSAlert("Password can\'t be less than 8 characters long.");
     } else if (strlen($_POST["password"]) > 16) {
         echo JSAlert("Password must not exceed 16 characters long.");
+    } else if (!array_key_exists("cpassword", $_POST)) {
+        echo JSAlert("Error 400: Bad Request: Parameter 'cpassword' is required");
+    } else if ($_POST["cpassword"] == "") {
+        echo JSAlert("Please confirm the password.");
+    } else if ($_POST["password"] != $_POST["cpassword"]) {
+        echo JSAlert("Password didn\'t match.");
     } else {
-        $adminId = $_POST["admin_id"];
         $password = $_POST["password"];
+        $cpassword = $_POST["cpassword"];
 
-        $U_public = new Admin();
-        $admin = $U_public->login(intval($adminId), $password);
+        $ok = $U_admin->updatePassword(intval($S_userId), $password);
 
-        if ($admin) {
-            $_SESSION["user_id"] = $admin->getId();
-            $_SESSION["user_type"] = "admin";
+        if ($ok) {
+            $U_admin->addLogEntry(Log::OPERATION_UPDATE_PASSWORD, "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId
+                . " updated the password");
             header("Location: " . WEBSITE_PATH . "/admin/login.php");
         } else {
-            $U_public->addLogEntry(Log::OPERATION_FAILED_LOGIN, "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $adminId
-                . " attempted to log in with incorrect credential");
-            echo JSAlert("Incorrect username or password.");
+            echo JSAlert("Error 500: Internal Server Error\n\nCouldn\'t update password.");
         }
     }
 }
+
+$currAdmin = $U_admin->getAdmin(intval($S_userId));
 
 ?>
 
@@ -59,10 +58,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="https://fonts.googleapis.com/css?family=Candal|Lora" rel="stylesheet">
 
     <!-- Admin Styling -->
-    <link rel="stylesheet" href="../admin/../css/admin.css">
+    <link rel="stylesheet" href="../../css/admin.css">
 
     <!-- Custom Styling -->
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../../css/style.css">
 
     <title>Admin Login</title>
 </head>
@@ -80,12 +79,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <li>
                 <a href="#">
                     <i class="fa fa-user"></i>
-
+                    <?php echo htmlspecialchars($currAdmin->getName()); ?> (ID: <?php echo htmlspecialchars(strval($currAdmin->getId())); ?>)
                     <i class="fa fa-chevron-down" style="font-size: .8em;"></i>
                 </a>
                 <ul>
-                    <!-- <li><a href="#">Dashboard</a></li>
-                    <li><a href="#" class="logout">Logout</a></li> -->
+                    <li><a href="./">&lt;&lt;&lt; Back</a></li>
+                    <li><a href="../../logout.php" class="logout">Logout</a></li>
                 </ul>
             </li>
         </ul>
@@ -97,12 +96,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="auth-content">
 
         <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-            <h2 class="form-title">Admin Login</h2>
-
-            <div>
-                <label>Admin ID</label>
-                <input type="text" name="admin_id" class="text-input">
-            </div>
+            <h2 class="form-title">Change Password</h2>
 
             <div>
                 <label>Password</label>
@@ -110,7 +104,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
 
             <div>
-                <button type="submit" name="login-btn" class="btn btn-big">Login</button>
+                <label>Confirm Password</label>
+                <input type="password" name="cpassword" class="text-input">
+            </div>
+
+            <div>
+                <button type="submit" name="login-btn" class="btn btn-big">Submit</button>
             </div>
 
         </form>

@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $logs = $U_admin->getAllLogs();
     } else {
         $operation = $_GET["operation"];
-        $allowedOperations = ["REGISTER", "LOGIN", "INSERT", "UPDATE", "DELETE"];
+        $allowedOperations = ["REGISTER", "FAILED_LOGIN", "UPDATE_PASSWORD", "INSERT", "UPDATE", "DELETE"];
 
         if (in_array(strtoupper($operation), $allowedOperations)) {
             $logs = $U_admin->getLogsByOperation($operation);
@@ -66,6 +66,7 @@ $currAdmin = $U_admin->getAdmin(intval($S_userId));
                     <i class="fa fa-chevron-down" style="font-size: .8em;"></i>
                 </a>
                 <ul>
+                    <li><a href="../users/change-password.php">Change Password</a></li>
                     <li><a href="../../logout.php" class="logout">Logout</a></li>
                 </ul>
             </li>
@@ -97,7 +98,8 @@ $currAdmin = $U_admin->getAdmin(intval($S_userId));
                     <div class="dropdown-content">
                         <a href="?">ALL OPERATION</a>
                         <a href="?operation=REGISTER">REGISTER</a>
-                        <a href="?operation=LOGIN">LOGIN</a>
+                        <a href="?operation=FAILED_LOGIN">FAILED_LOGIN</a>
+                        <a href="?operation=UPDATE_PASSWORD">UPDATE_PASSWORD</a>
                         <a href="?operation=INSERT">INSERT</a>
                         <a href="?operation=UPDATE">UPDATE</a>
                         <a href="?operation=DELETE">DELETE</a>
