@@ -27,6 +27,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo JSAlert("Please enter password.");
     } else if (empty($_POST["cpassword"])) {
         echo JSAlert("Please confirm the password.");
+    } else if ($_POST["password"] != $_POST["cpassword"]) {
+        echo JSAlert("Password didn\'t match.");
     } else {
         $admin = $U_admin->getAdmin(intval($adminId));
 
