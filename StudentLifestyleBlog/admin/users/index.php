@@ -9,9 +9,11 @@ include_once "../../checkSessionAdmin.php";
 $U_admin = new Admin();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (!empty($_POST["method"])) {
+    if (array_key_exists("method", $_POST)) {
         if ($_POST["method"] == "delete") {
-            if (!empty($_POST["admin_id"])) {
+            if (!array_key_exists("admin_id", $_POST)) {
+                echo JSAlert("Error 400: Bad Request: Parameter 'admin_id' is required");
+            } else {
                 $adminId = $_POST["admin_id"];
 
                 if ($adminId != $S_userId) {
@@ -22,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $U_admin->addLogEntry(Log::OPERATION_DELETE, "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId
                             . " deleted admin (ID: \"" . $admin->getId() . "\", Name: \"" . $admin->getName() . "\")");
                     } else {
-                        echo JSAlert("The admin doesn't exist.");
+                        echo JSAlert("The admin doesn\'t exist.");
                     }
                 } else {
                     echo JSAlert("Currently logged in admin cannot be deleted.");

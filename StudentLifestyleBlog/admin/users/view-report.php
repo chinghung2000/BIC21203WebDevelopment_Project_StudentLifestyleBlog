@@ -10,9 +10,15 @@ include_once "../../checkSessionAdmin.php";
 $U_admin = new Admin();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (!empty($_POST["method"])) {
+    if (array_key_exists("method", $_POST)) {
         if ($_POST["method"] == "execute") {
-            if (!empty($_POST["report_id"]) && !empty($_POST["target_type"]) && !empty($_POST["target_id"])) {
+            if (!array_key_exists("report_id", $_POST)) {
+                echo JSAlert("Error 400: Bad Request: Parameter 'report_id' is required");
+            } else if (!array_key_exists("target_type", $_POST)) {
+                echo JSAlert("Error 400: Bad Request: Parameter 'target_type' is required");
+            } else if (!array_key_exists("target_id", $_POST)) {
+                echo JSAlert("Error 400: Bad Request: Parameter 'target_id' is required");
+            } else {
                 $reportId = $_POST["report_id"];
                 $targetType = $_POST["target_type"];
                 $targetId = $_POST["target_id"];
@@ -38,7 +44,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             }
         } else if ($_POST["method"] == "reject") {
-            if (!empty($_POST["report_id"])) {
+            if (array_key_exists("report_id", $_POST)) {
+                echo JSAlert("Error 400: Bad Request: Parameter 'report_id' is required");
+            } else {
                 $reportId = $_POST["report_id"];
 
                 $U_admin->updateReportStatus(intval($reportId), Report::STATUS_REJECTED);

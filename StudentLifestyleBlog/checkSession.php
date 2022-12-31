@@ -5,13 +5,13 @@ include_once "constants.php";
 
 session_start();
 
-$userId = isset($_SESSION["user_id"]) ? $_SESSION["user_id"] : null;
-$userType = isset($_SESSION["user_type"]) ? $_SESSION["user_type"] : null;
+$S_userId = array_key_exists("user_id", $_SESSION) ? $_SESSION["user_id"] : null;
+$S_userType = array_key_exists("user_type", $_SESSION) ? $_SESSION["user_type"] : null;
 
-if ($userId != null && $userType != null) {
-    if ($userType == "admin") {
+if ($S_userId != null && $S_userType != null) {
+    if ($S_userType == "admin") {
         header("Location: " . WEBSITE_PATH . "/admin/users");
-    } else if ($userType == "user") {
+    } else if ($S_userType == "user") {
         header("Location: " . WEBSITE_PATH);
     }
 } else {

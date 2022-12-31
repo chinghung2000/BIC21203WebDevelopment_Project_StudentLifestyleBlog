@@ -7,14 +7,22 @@ include_once "../functions.php";
 include_once "../checkSession.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (empty($_POST["admin_id"])) {
+    if (!array_key_exists("admin_id", $_POST)) {
+        echo JSAlert("Error 400: Bad Request: Parameter 'admin_id' is required");
+    } else if ($_POST["admin_id"] == "") {
         echo JSAlert("Please enter admin ID.");
-    } else if (strlen($_POST["admin_id"]) > 16) {
-        echo JSAlert("Admin ID too long.");
-    } else if (empty($_POST["password"])) {
+    } else if (!is_numeric(($_POST["admin_id"]))) {
+        echo JSAlert("Admin ID must be an integer.");
+    } else if (intval($_POST["admin_id"]) < 1) {
+        echo JSAlert("Admin ID must be greater than zero.");
+    } else if (intval($_POST["admin_id"]) > 2147483647) {
+        echo JSAlert("Admin ID must not exceed 2147483647.");
+    } else if (!array_key_exists("password", $_POST)) {
+        echo JSAlert("Error 400: Bad Request: Parameter 'password' is required");
+    } else if ($_POST["password"] == "") {
         echo JSAlert("Please enter password.");
     } else if (strlen($_POST["password"]) > 16) {
-        echo JSAlert("Password too long.");
+        echo JSAlert("Password must not exceed 16 characters long.");
     } else {
         $adminId = $_POST["admin_id"];
         $password = $_POST["password"];

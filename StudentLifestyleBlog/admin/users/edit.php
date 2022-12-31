@@ -15,12 +15,14 @@ if ($_SERVER["REQUEST_METHOD"] != "POST") {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $adminId = !empty($_POST["admin_id"]) ? $_POST["admin_id"] : "";
-    $adminName = !empty($_POST["admin_name"]) ? $_POST["admin_name"] : "";
+    if (array_key_exists("admin_id", $_POST)) $adminId = $_POST["admin_id"];
+    if (array_key_exists("admin_name", $_POST)) $adminName = $_POST["admin_name"];
 
     if (array_key_exists("method", $_POST)) {
         if ($_POST["method"] == "edit_query") {
-            if (!empty($_POST["admin_id"])) {
+            if (!array_key_exists("admin_id", $_POST)) {
+                echo JSAlert("Error 400: Bad Request: Parameter 'admin_id' is required");
+            } else {
                 $admin = $U_admin->getAdmin(intval($adminId));
 
                 if ($admin) {
@@ -28,22 +30,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $adminId = strval($admin->getId());
                     $adminName = $admin->getName();
                 } else {
-                    header("Location: " . WEBSITE_PATH . "admin/users");
+                    echo JSAlert("The admin doesn\'t exist.");
                 }
             }
         } else if ($_POST["method"] == "edit") {
-            if (array_key_exists("v_admin_id", $_SESSION)) {
+            if (!array_key_exists("v_admin_id", $_SESSION)) {
                 header("Location: " . WEBSITE_PATH . "/admin/users");
-            } else if (array_key_exists("admin_id", $_POST)) {
-                echo JSAlert("")
+            } else if (!array_key_exists("admin_id", $_POST)) {
+                echo JSAlert("Error 400: Bad Request: Parameter 'admin_id' is required");
             } else if ($_POST["admin_id"] == "") {
                 echo JSAlert("Please enter admin ID.");
             } else if (!is_numeric(($_POST["admin_id"]))) {
                 echo JSAlert("Admin ID must be an integer.");
-            } else if ($_POST["admin_id"] < 1) {
+            } else if (intval($_POST["admin_id"]) < 1) {
                 echo JSAlert("Admin ID must be greater than zero.");
-            } else if (empty($_POST["admin_name"])) {
+            } else if (intval($_POST["admin_id"]) > 2147483647) {
+                echo JSAlert("Admin ID must not exceed 2147483647.");
+            } else if (!array_key_exists("admin_name", $_POST)) {
+                echo JSAlert("Error 400: Bad Request: Parameter 'admin_name' is required");
+            } else if ($_POST["admin_name"] == "") {
                 echo JSAlert("Please enter admin name.");
+            } else if (strlen($_POST["admin_name"]) > 50) {
+                echo JSAlert("Admin name must not exceed 50 characters long.");
             } else {
                 $oldAdmin = $U_admin->getAdmin(intval($_SESSION["v_admin_id"]));
                 $admin = $U_admin->getAdmin(intval($adminId));

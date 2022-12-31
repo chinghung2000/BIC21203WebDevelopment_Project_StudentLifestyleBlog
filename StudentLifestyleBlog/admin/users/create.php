@@ -10,24 +10,38 @@ $U_admin = new Admin();
 $adminId = $adminName = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $adminId = !empty($_POST["admin_id"]) ? $_POST["admin_id"] : "";
-    $adminName = !empty($_POST["admin_name"]) ? $_POST["admin_name"] : "";
-    $password = !empty($_POST["password"]) ? $_POST["password"] : "";
-    $cpassword = !empty($_POST["cpassword"]) ? $_POST["cpassword"] : "";
+    $adminId = array_key_exists("admin_id", $_POST) ? $_POST["admin_id"] : "";
+    $adminName = array_key_exists("admin_name", $_POST) ? $_POST["admin_name"] : "";
+    $password = array_key_exists("password", $_POST) ? $_POST["password"] : "";
+    $cpassword = array_key_exists("cpassword", $_POST) ? $_POST["cpassword"] : "";
 
-    if (empty($_POST["admin_id"])) {
+    if (!array_key_exists("admin_id", $_POST)) {
+        echo JSAlert("Error 400: Bad Request: Parameter 'admin_id' is required");
+    } else if ($_POST["admin_id"] == "") {
         echo JSAlert("Please enter admin ID.");
     } else if (!is_numeric(($_POST["admin_id"]))) {
         echo JSAlert("Admin ID must be an integer.");
-    } else if ($_POST["admin_id"] < 1) {
+    } else if (intval($_POST["admin_id"]) < 1) {
         echo JSAlert("Admin ID must be greater than zero.");
-    } else if (empty($_POST["admin_name"])) {
+    } else if (intval($_POST["admin_id"]) > 2147483647) {
+        echo JSAlert("Admin ID must not exceed 2147483647.");
+    } else if (!array_key_exists("admin_name", $_POST)) {
+        echo JSAlert("Error 400: Bad Request: Parameter 'admin_name' is required");
+    } else if ($_POST["admin_name"] == "") {
         echo JSAlert("Please enter admin name.");
-    } else if (empty($_POST["password"])) {
+    } else if (strlen($_POST["admin_name"]) > 50) {
+        echo JSAlert("Admin name must not exceed 50 characters long.");
+    } else if (!array_key_exists("password", $_POST)) {
+        echo JSAlert("Error 400: Bad Request: Parameter 'password' is required");
+    } else if ($_POST["password"] == "") {
         echo JSAlert("Please enter password.");
     } else if (strlen($_POST["password"]) < 8) {
-        echo JSAlert("Password length can\'t be less than 8 characters.");
-    } else if (empty($_POST["cpassword"])) {
+        echo JSAlert("Password can\'t be less than 8 characters long.");
+    } else if (strlen($_POST["password"]) > 16) {
+        echo JSAlert("Password must not exceed 16 characters long.");
+    } else if (!array_key_exists("cpassword", $_POST)) {
+        echo JSAlert("Error 400: Bad Request: Parameter 'cpassword' is required");
+    } else if ($_POST["cpassword"] == "") {
         echo JSAlert("Please confirm the password.");
     } else if ($_POST["password"] != $_POST["cpassword"]) {
         echo JSAlert("Password didn\'t match.");

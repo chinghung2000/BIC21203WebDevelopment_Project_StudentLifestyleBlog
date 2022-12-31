@@ -10,7 +10,7 @@ $operation = "";
 $logs = [];
 
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
-    if (empty($_GET["operation"])) {
+    if (!array_key_exists("operation", $_GET)) {
         $logs = $U_admin->getAllLogs();
     } else {
         $operation = $_GET["operation"];
@@ -18,6 +18,9 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
 
         if (in_array(strtoupper($operation), $allowedOperations)) {
             $logs = $U_admin->getLogsByOperation($operation);
+        } else {
+            $operation = "";
+            $logs = $U_admin->getAllLogs();
         }
     }
 }
@@ -87,7 +90,7 @@ $currAdmin = $U_admin->getAdmin(intval($S_userId));
         <div class="admin-content">
             <div class="button-group">
 
-                <h2 class="page-title">Log Activity (<?php echo ($operation) ? $operation : "ALL"; ?>)</h2>
+                <h2 class="page-title">Log Activity (<?php echo ($operation != "") ? $operation : "ALL"; ?>)</h2>
 
                 <div class="dropdown">
                     <button class="dropbtn">Choose Operation:</button>
