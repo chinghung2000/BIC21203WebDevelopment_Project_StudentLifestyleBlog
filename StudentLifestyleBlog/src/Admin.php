@@ -4,8 +4,8 @@ declare(strict_types=1);
 require_once "Users.php";
 require_once "AdminInterface.php";
 require_once "MySQL.php";
-require_once "AES.php";
 require_once "Comment.php";
+require_once "Hash.php";
 require_once "Log.php";
 require_once "Report.php";
 require_once "User.php";
@@ -41,7 +41,7 @@ class Admin extends Users implements AdminInterface {
         if ($db = (new MySQL())->connect()) {
             try {
                 $stmt = $db->prepare("SELECT `admin_id`, `admin_name` FROM `admin` WHERE `admin_id`=? AND `password`=?;");
-                $password = AES::encrypt($password);
+                $password = Hash::generateDigest($password, Hash::SHA_256);
                 $stmt->bind_param("is", $adminId, $password);
                 $stmt->execute();
                 $result = $stmt->get_result();
@@ -60,7 +60,7 @@ class Admin extends Users implements AdminInterface {
         if ($db = (new MySQL())->connect()) {
             try {
                 $stmt = $db->prepare("UPDATE `admin` SET `password`=? WHERE `admin_id`=?;");
-                $password = AES::encrypt($password);
+                $password = Hash::generateDigest($password, Hash::SHA_256);
                 $stmt->bind_param("is", $password, $adminId);
                 return $stmt->execute();
             } catch (mysqli_sql_exception $e) {
@@ -111,7 +111,7 @@ class Admin extends Users implements AdminInterface {
         if ($db = (new MySQL())->connect()) {
             try {
                 $stmt = $db->prepare("INSERT INTO `admin` (`admin_id`, `password`, `admin_name`) VALUES (?, ?, ?);");
-                $password = AES::encrypt($password);
+                $password = Hash::generateDigest($password, Hash::SHA_256);
                 $stmt->bind_param("iss", $adminId, $password, $adminName);
                 return $stmt->execute();
             } catch (mysqli_sql_exception $e) {
