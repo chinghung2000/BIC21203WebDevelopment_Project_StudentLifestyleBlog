@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else if (empty($_POST["password"])) {
         echo JSAlert("Please enter password.");
     } else if (strlen($_POST["password"]) < 8) {
-        echo JSAlert("Password length can't be less than 8 characters.");
+        echo JSAlert("Password length can\'t be less than 8 characters.");
     } else if (empty($_POST["cpassword"])) {
         echo JSAlert("Please confirm the password.");
     } else if ($_POST["password"] != $_POST["cpassword"]) {

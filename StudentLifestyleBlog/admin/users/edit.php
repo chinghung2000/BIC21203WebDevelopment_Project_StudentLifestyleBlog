@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $adminId = !empty($_POST["admin_id"]) ? $_POST["admin_id"] : "";
     $adminName = !empty($_POST["admin_name"]) ? $_POST["admin_name"] : "";
 
-    if (!empty($_POST["method"])) {
+    if (array_key_exists("method", $_POST)) {
         if ($_POST["method"] == "edit_query") {
             if (!empty($_POST["admin_id"])) {
                 $admin = $U_admin->getAdmin(intval($adminId));
@@ -32,9 +32,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             }
         } else if ($_POST["method"] == "edit") {
-            if (!isset($_SESSION["v_admin_id"])) {
+            if (array_key_exists("v_admin_id", $_SESSION)) {
                 header("Location: " . WEBSITE_PATH . "/admin/users");
-            } else if (empty($_POST["admin_id"])) {
+            } else if (array_key_exists("admin_id", $_POST)) {
+                echo JSAlert("")
+            } else if ($_POST["admin_id"] == "") {
                 echo JSAlert("Please enter admin ID.");
             } else if (!is_numeric(($_POST["admin_id"]))) {
                 echo JSAlert("Admin ID must be an integer.");
