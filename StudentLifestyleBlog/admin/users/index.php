@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $admin = $U_admin->getAdmin(intval($adminId));
 
                     if ($admin) {
-                        $ok = $U_admin->deleteAdmin(intval($adminId));
+                        $ok = $U_admin->deleteAdmin($admin->getId());
 
                         if ($ok) {
                             $U_admin->addLogEntry(Log::OPERATION_DELETE, "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId

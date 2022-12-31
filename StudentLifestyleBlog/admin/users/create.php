@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo JSAlert("Error 500: Internal Server Error\n\nCouldn\'t add admin.");
             }
         } else {
-            echo JSAlert("Admin with this ID \"" . $adminId . "\" already exists.");
+            echo JSAlert("Admin with this ID \"" . $admin->getId() . "\" already exists.");
         }
     }
 }

@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $comment = $U_admin->getComment(intval($targetId));
 
                     if ($comment) {
-                        $ok = $U_admin->deleteComment(intval($targetId));
+                        $ok = $U_admin->deleteComment($comment->getId());
 
                         if ($ok) {
                             $U_admin->updateReportStatus(intval($reportId), Report::STATUS_EXECUTED);
