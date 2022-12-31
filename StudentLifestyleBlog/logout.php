@@ -5,17 +5,17 @@ include_once "constants.php";
 
 session_start();
 
-$userType = isset($_SESSION["user_type"]) ? $_SESSION["user_type"] : null;
+$userType = array_key_exists("user_type", $_SESSION) ? $_SESSION["user_type"] : null;
 
 session_unset();
 session_destroy();
 
-if ($userType != null) {
-    if ($userType == "admin") {
-        header("Location: " . WEBSITE_PATH . "/admin");
-    } else if ($userType == "user") {
-        header("Location: " . WEBSITE_PATH);
-    }
+if ($userType == "admin") {
+    header("Location: " . WEBSITE_PATH . "/admin");
+} else if ($userType == "user") {
+    header("Location: " . WEBSITE_PATH);
+} else {
+    header("Location: " . WEBSITE_PATH);
 }
 
 ?>
