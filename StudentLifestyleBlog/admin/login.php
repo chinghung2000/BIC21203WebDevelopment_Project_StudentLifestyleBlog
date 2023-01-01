@@ -33,6 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($admin) {
             $_SESSION["user_id"] = $admin->getId();
             $_SESSION["user_type"] = "admin";
+            $_SESSION["last_created"] = time();
             header("Location: " . WEBSITE_PATH . "/admin/login.php");
         } else {
             $U_public->addLogEntry(Log::OPERATION_FAILED_LOGIN, "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $adminId
