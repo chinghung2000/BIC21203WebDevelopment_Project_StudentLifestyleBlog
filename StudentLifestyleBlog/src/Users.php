@@ -1,8 +1,9 @@
 <?php
 
 declare(strict_types=1);
-require_once "MySQL.php";
 require_once "UsersInterface.php";
+require_once "MySQL.php";
+require_once "Post.php";
 
 class Users implements UsersInterface {
     public function getAllRecentPosts(int $count): array {

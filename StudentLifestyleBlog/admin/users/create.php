@@ -39,27 +39,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo JSAlert("Password can\'t be less than 8 characters long.");
     } else if (strlen($_POST["password"]) > 16) {
         echo JSAlert("Password must not exceed 16 characters long.");
-    } else if (!array_key_exists("cpassword", $_POST)) {
-        echo JSAlert("Error 400: Bad Request: Parameter 'cpassword' is required");
-    } else if ($_POST["cpassword"] == "") {
-        echo JSAlert("Please confirm the password.");
-    } else if ($_POST["password"] != $_POST["cpassword"]) {
-        echo JSAlert("Password didn\'t match.");
     } else {
-        $admin = $U_admin->getAdmin(intval($adminId));
+        $pattern = "/^(?=.*[A-z])(?=.*[0-9]).{8,16}/";
 
-        if (!$admin) {
-            $ok = $U_admin->addAdmin(intval($adminId), $password, $adminName);
-
-            if ($ok) {
-                $U_admin->addLogEntry(Log::OPERATION_INSERT, "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId
-                    . " added new admin (ID: \"" . $adminId . "\", Name: \"" . $adminName . "\")");
-                header("Location: " . WEBSITE_PATH . "/admin/users");
-            } else {
-                echo JSAlert("Error 500: Internal Server Error\n\nCouldn\'t add admin.");
-            }
+        if (!preg_match($pattern, $_POST["password"])) {
+            echo JSAlert("Password must contain numbers and alphabets.");
+        } else if (!array_key_exists("cpassword", $_POST)) {
+            echo JSAlert("Error 400: Bad Request: Parameter 'cpassword' is required");
+        } else if ($_POST["cpassword"] == "") {
+            echo JSAlert("Please confirm the password.");
+        } else if ($_POST["password"] != $_POST["cpassword"]) {
+            echo JSAlert("Password didn\'t match.");
         } else {
-            echo JSAlert("Admin with this ID \"" . $admin->getId() . "\" already exists.");
+            $admin = $U_admin->getAdmin(intval($adminId));
+
+            if (!$admin) {
+                $ok = $U_admin->addAdmin(intval($adminId), $password, $adminName);
+
+                if ($ok) {
+                    $U_admin->addLogEntry(Log::OPERATION_INSERT, "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId
+                        . " added new admin (ID: \"" . $adminId . "\", Name: \"" . $adminName . "\")");
+                    header("Location: " . WEBSITE_PATH . "/admin/users");
+                } else {
+                    echo JSAlert("Error 500: Internal Server Error\n\nCouldn\'t add admin.");
+                }
+            } else {
+                echo JSAlert("Admin with this ID \"" . $admin->getId() . "\" already exists.");
+            }
         }
     }
 }

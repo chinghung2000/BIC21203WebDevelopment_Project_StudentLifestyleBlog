@@ -1,9 +1,10 @@
 <?php
 
 declare(strict_types=1);
-require_once "Users.php";
+// require_once "Users.php";
 require_once "AdminInterface.php";
 require_once "MySQL.php";
+require_once "AES.php";
 require_once "Comment.php";
 require_once "Hash.php";
 require_once "Log.php";
@@ -17,7 +18,7 @@ class Admin extends Users implements AdminInterface {
     function __construct(array $r = null) {
         if ($r) {
             $this->id = $r["admin_id"];
-            $this->name = $r["admin_name"];
+            $this->name = AES::decrypt($r["admin_name"]);
         }
     }
 
@@ -112,7 +113,7 @@ class Admin extends Users implements AdminInterface {
             try {
                 $stmt = $db->prepare("INSERT INTO `admin` (`admin_id`, `password`, `admin_name`) VALUES (?, ?, ?);");
                 $password = Hash::generateDigest($password, Hash::SHA_256);
-                $stmt->bind_param("iss", $adminId, $password, $adminName);
+                $stmt->bind_param("iss", $adminId, $password, AES::encrypt($adminName));
                 return $stmt->execute();
             } catch (mysqli_sql_exception $e) {
             }
@@ -125,7 +126,7 @@ class Admin extends Users implements AdminInterface {
         if ($db = (new MySQL())->connect()) {
             try {
                 $stmt = $db->prepare("UPDATE `admin` SET `admin_id`=?, `admin_name`=? WHERE `admin_id`=?;");
-                $stmt->bind_param("isi", $adminId, $adminName, $oldAdminId);
+                $stmt->bind_param("isi", $adminId, AES::encrypt($adminName), $oldAdminId);
                 return $stmt->execute();
             } catch (mysqli_sql_exception $e) {
             }

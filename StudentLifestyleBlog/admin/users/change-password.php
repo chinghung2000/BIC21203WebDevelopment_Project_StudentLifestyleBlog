@@ -17,24 +17,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo JSAlert("Password can\'t be less than 8 characters long.");
     } else if (strlen($_POST["password"]) > 16) {
         echo JSAlert("Password must not exceed 16 characters long.");
-    } else if (!array_key_exists("cpassword", $_POST)) {
-        echo JSAlert("Error 400: Bad Request: Parameter 'cpassword' is required");
-    } else if ($_POST["cpassword"] == "") {
-        echo JSAlert("Please confirm the password.");
-    } else if ($_POST["password"] != $_POST["cpassword"]) {
-        echo JSAlert("Password didn\'t match.");
     } else {
-        $password = $_POST["password"];
-        $cpassword = $_POST["cpassword"];
+        $pattern = "/^(?=.*[A-z])(?=.*[0-9]).{8,16}/";
 
-        $ok = $U_admin->updatePassword(intval($S_userId), $password);
-
-        if ($ok) {
-            $U_admin->addLogEntry(Log::OPERATION_UPDATE_PASSWORD, "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId
-                . " updated the password");
-            header("Location: " . WEBSITE_PATH . "/admin/login.php");
+        if (!preg_match($pattern, $_POST["password"])) {
+            echo JSAlert("Password must contain numbers and alphabets.");
+        } else if (!array_key_exists("cpassword", $_POST)) {
+            echo JSAlert("Error 400: Bad Request: Parameter 'cpassword' is required");
+        } else if ($_POST["cpassword"] == "") {
+            echo JSAlert("Please confirm the password.");
+        } else if ($_POST["password"] != $_POST["cpassword"]) {
+            echo JSAlert("Password didn\'t match.");
         } else {
-            echo JSAlert("Error 500: Internal Server Error\n\nCouldn\'t update password.");
+            $password = $_POST["password"];
+            $cpassword = $_POST["cpassword"];
+
+            $ok = $U_admin->updatePassword(intval($S_userId), $password);
+
+            if ($ok) {
+                $U_admin->addLogEntry(Log::OPERATION_UPDATE_PASSWORD, "[" . date_format(new DateTime(), "d/m/Y h:i:s A") . "] Admin " . $S_userId
+                    . " updated the password");
+                header("Location: " . WEBSITE_PATH . "/admin/login.php");
+            } else {
+                echo JSAlert("Error 500: Internal Server Error\n\nCouldn\'t update password.");
+            }
         }
     }
 }

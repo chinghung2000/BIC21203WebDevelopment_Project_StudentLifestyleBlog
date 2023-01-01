@@ -4,6 +4,9 @@ declare(strict_types=1);
 require_once "Users.php";
 require_once "UserInterface.php";
 require_once "MySQL.php";
+require_once "Comment.php";
+require_once "Like.php";
+require_once "Post.php";
 
 class User extends Users implements UserInterface {
     private int $id;
